@@ -1,0 +1,46 @@
+pip install django
+
+папка first
+
+django-admin startproject password_generator_project
+
+python manage.py runserver
+
+python manage.py runserver 4000
+python manage.py runserver 1.2.3.4:4000
+
+python manage.py startapp generator
+
+
+
+http://127.0.0.1:8000/?length=2
+http://127.0.0.1:8000/password
+
+
+python manage.py collectstatic
+
+
+second
+
+django-admin startproject personal_portfolio
+
+python manage.py startapp skills
+python manage.py startapp blog
+
+pip install Pillow
+
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py createsuperuser
+
+python manage.py changepassword admin (имя пользователя)(новый пароль)
+
+skills
+	static
+		css
+			style.css
+		skills
+			wc.jpg
+			
+http://127.0.0.1:8000/blog/1/
