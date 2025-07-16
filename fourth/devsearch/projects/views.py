@@ -21,12 +21,14 @@ def project(request, pk):
 def create_project(request):
     form = ProjectForm()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save(commit=False)
             form.save()
             return redirect('projects')
 
-    context = {'form': form}
+    context = {
+        'form': form
+    }
     return render(request, 'projects/form-template.html', context)

@@ -1,29 +1,30 @@
 from django.db import models
-from users.models import Profile
+from django.contrib.auth.models import User
 
 
-class Project(models.Model):
-    owner = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
-
-
-title = models.CharField(max_length=200)
-description = models.TextField(null=True, blank=True)
-featured_image = models.ImageField(null=True, blank=True, upload_to="projects/%Y/%m/%d/", default="default.jpg")
-demo_link = models.CharField(max_length=2000, null=True, blank=True)
-source_link = models.CharField(max_length=2000, null=True, blank=True)
-tags = models.ManyToManyField('Tag', blank=True)
-vote_total = models.IntegerField(default=0, null=True, blank=True)
-vote_ratio = models.IntegerField(default=0, null=True, blank=True)
-created = models.DateTimeField(auto_now_add=True)
-
-
-def __str__(self):
-    return self.title
-
-
-class Tag(models.Model):
-    name = models.CharField(max_length=200)
+# Create your models here.
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    email = models.EmailField(max_length=500, null=True, blank=True)
+    username = models.CharField(max_length=200, null=True, blank=True)
+    short_info = models.CharField(max_length=200, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    profile_image = models.ImageField(null=True, blank=True, upload_to='profiles/', default='profiles/user-default.png')
+    social_github = models.CharField(max_length=200, null=True, blank=True)
+    social_youtube = models.CharField(max_length=200, null=True, blank=True)
+    social_website = models.CharField(max_length=200, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.username}"
+
+
+class Skill(models.Model):
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name}"

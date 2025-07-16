@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from .models import Project
 from django import forms
 
+
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
@@ -11,12 +12,13 @@ class ProjectForm(ModelForm):
             'tags': forms.CheckboxSelectMultiple(),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        for name, field in self.fields.items():
-            field.widget.attrs.update({'class': 'input'})
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            for name, field in self.fields.items():
+                field.widget.attrs.update({'class': 'input'})
 
 
-        # self.fields['title'].widget.attrs.update({'class': 'input'})
-        # self.fields['description'].widget.attrs.update({'class': 'input'})
+
+            # self.fields['title'].widget.attrs.update({'class': 'input'})
