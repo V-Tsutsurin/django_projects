@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import  Profile
+from .models import Profile
 
 
 # Create your views here.
@@ -13,5 +13,15 @@ def profiles(request):
 
 
 def user_profile(request, pk):
+    prof = Profile.objects.get(id=pk)
 
-    return render(request, 'users/profile.html')
+    top_skills = prof.skill_set.exclude(description__exact="")
+    other_skills = prof.skill_set.filter(description="")
+
+    context = {
+        'profile': prof,
+        'top_skills': top_skills,
+        "other_skills": other_skills
+    }
+
+    return render(request, 'users/profile.html', context)
