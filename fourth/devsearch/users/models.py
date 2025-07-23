@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, post_delete
+
 
 # Create your models here.
 class Profile(models.Model):
@@ -30,15 +30,4 @@ class Skill(models.Model):
         return f"{self.name}"
 
 
-def profile_update(sender, instance, created, **kwargs):
-    print("Profile saved")
-    print("Instance", instance)
-    print("Created", created)
 
-
-def profile_delete(sender, instance, **kwargs):
-    print("Delete user>>>")
-
-
-post_save.connect(profile_update, sender=Profile)
-post_delete.connect(profile_delete, sender=Profile)
