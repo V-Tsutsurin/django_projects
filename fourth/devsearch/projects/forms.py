@@ -13,11 +13,11 @@ class ProjectForm(ModelForm):
         }
 
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-            for name, fields in self.fields.items():
-                fields.widget.attrs.update({'class': 'input'})
+        for name, fields in self.fields.items():
+            fields.widget.attrs.update({'class': 'input'})
 
 
 

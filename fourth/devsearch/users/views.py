@@ -4,9 +4,14 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+
+
 def profiles(request):
     prof = Profile.objects.all()
     context = {
@@ -60,3 +65,41 @@ def logout_user(request):
     return redirect('login')
 
 
+def register_user(request):
+    page = 'register'
+    form = CustomUserCreationForm()
+
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+
+            messages.success(request, "User account was created!!")
+            login(request, user)
+            return redirect('profiles')
+        else:
+            messages.error(request, "Error registration")
+
+    context = {
+        'page': page,
+        'form': form
+    }
+    return render(request, 'users/login_register.html', context)
+
+
+@login_required(login_url='login')
+def user_account(request):
+    prof = request.user.profile
+    skills = prof.skill_set.all()
+    projects = prof.project_set.all()
+
+    context = {
+        'profile': prof,
+        'skills': skills,
+        'projects': projects
+
+    }
+
+    return render(request, 'users/account.html', context)
