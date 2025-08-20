@@ -23,12 +23,14 @@ def project(request, pk):
 
 @login_required(login_url="login")
 def create_project(request):
+    profile = request.user.profile
     form = ProjectForm()
 
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save(commit=False)
+            project.owner = profile
             form.save()
             return redirect('projects')
 
@@ -36,3 +38,5 @@ def create_project(request):
         'form': form
     }
     return render(request, 'projects/form-template.html', context)
+
+
