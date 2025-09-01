@@ -1,17 +1,47 @@
 from django.shortcuts import render, redirect
 from .models import Project, Tag
-from .forms import ProjectForm
+from .forms import ProjectForm, ReviewForm
 from django.contrib.auth.decorators import login_required
+from .utils import search_project
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.contrib import messages
 
 
 # Create your views here.
 
 
 def projects(request):
-    pr = Project.objects.all()
+    pr, search_query = search_project(request)
+    page = request.GET.get('page')
+    results = 3
+    paginator = Paginator(pr, results)
+
+    try:
+        pr = paginator.page(page)
+    except PageNotAnInteger:
+        page = 1
+        pr = paginator.page(page)
+    except EmptyPage:
+        page = paginator.num_pages
+        pr = paginator.page(page)
+
+    left_index = int(page) - 4
+
+    if left_index < 1:
+        left_index = 1
+
+    right_index = int(page) + 5
+
+    if right_index > paginator.num_pages:
+        right_index = paginator.num_pages + 1
+
+    custom_range = range(left_index, right_index)
 
     context = {
-        'projects': pr
+        'projects': pr,
+        'search_query': search_query,
+        "paginator": paginator,
+        "custom_range": custom_range
     }
 
     return render(request, "projects/projects.html", context)
@@ -20,8 +50,19 @@ def projects(request):
 @login_required(login_url="login")
 def project(request, pk):
     project_obj = Project.objects.get(id=pk)
+    form = ReviewForm()
 
-    return render(request, 'projects/single-project.html', {'project': project_obj})
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        review = form.save(commit=False)
+        review.owner = request.user.profile
+        review.project = project_obj
+        review.save()
+
+        messages.success(request, 'Your review was added successfully')
+        return redirect('project', pk=project_obj.id)
+
+    return render(request, 'projects/single-project.html', {'project': project_obj,'form': form})
 
 
 @login_required(login_url="login")
