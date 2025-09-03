@@ -43,6 +43,14 @@
               {{ project.vote_ratio }}% Postitive Feedback {{ project.vote_total }} Vote{{ project.vote_total|pluralize:'s' }}
             </h5>
 
+            {% if request.user.profile.id in project.reviewers %}
+<!--            Вы уже оставили отзыв на этот проект-->
+            <p>You have alredy submited review for this project</p>
+            {% elif request.user.profile == project.owner %}
+<!--            Вы не можете оставить отзыв к своему проекту-->
+            <p>Your rewiev your work</p>
+            {% elif request.user.is_authenticated %}
+
             <form class="form" action="{% url 'project' project.id %}" method="POST">
               {% csrf_token %}
               {% for field in form %}
@@ -54,6 +62,9 @@
               {% endfor %}
               <input class="btn btn--sub btn--lg" type="submit" value="Comments" />
             </form>
+            {% else %}
+            <a href="{% url 'login' %}">Plese login to leve reviews</a>
+            {% endif %}
             <div class="commentList">
 
               {% for review in project.review_set.all %}

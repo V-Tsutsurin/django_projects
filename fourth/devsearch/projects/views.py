@@ -47,7 +47,7 @@ def projects(request):
     return render(request, "projects/projects.html", context)
 
 
-@login_required(login_url="login")
+
 def project(request, pk):
     project_obj = Project.objects.get(id=pk)
     form = ReviewForm()
@@ -59,10 +59,12 @@ def project(request, pk):
         review.project = project_obj
         review.save()
 
+        project_obj.get_vote_count()
+
         messages.success(request, 'Your review was added successfully')
         return redirect('project', pk=project_obj.id)
 
-    return render(request, 'projects/single-project.html', {'project': project_obj,'form': form})
+    return render(request, 'projects/single-project.html', {'project': project_obj, 'form': form})
 
 
 @login_required(login_url="login")
